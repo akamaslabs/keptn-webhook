@@ -29,3 +29,4 @@ buildAndPush:
   script:
     - make info
     - make buildAndPush
+    - make release-to-S3
