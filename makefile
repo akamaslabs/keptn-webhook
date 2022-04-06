@@ -7,10 +7,9 @@ this_branch = $(if $(CI_COMMIT_REF_NAME),  $(CI_COMMIT_REF_NAME), $(parsed_branc
 S3_BUCKET=s3://akamas/integrations/keptn/
 
 this_version := ${shell grep 'version=' setup.py| awk -F'=' '{print $2}' | cut -d"'" -f 2}
-AKAMAS_REGISTRY := 485790562880.dkr.ecr.us-east-2.amazonaws.com
 service := keptn-webhook
 VERSION ?= ${this_version}
-IMAGE_NAME := ${AKAMAS_REGISTRY}/akamas/integrations/$(service)
+IMAGE_NAME := akamaslabs/integrations/$(service)
 
 
 .PHONY: help
