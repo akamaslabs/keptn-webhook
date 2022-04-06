@@ -28,18 +28,22 @@ build: ## Builds docker image
 		-f build/Dockerfile \
 		.
 .PHONY: push
-push:  ## Builds and pushes the image to the registry
+push: registry-login ## Builds and pushes the image to the registry
 	env && \
 	docker push ${IMAGE_NAME}:${VERSION}
 
 .PHONY: buildAndPush
-buildAndPush: build  ## Builds and pushes the image to the registry
+buildAndPush: build registry-login ## Builds and pushes the image to the registry
 	@docker push ${IMAGE_NAME}:${VERSION}
 
 .PHONY: update-compose
 update-compose:  ## Update service version in docker-compose
 	@echo "Actualizing version ${VERSION} in docker-compose.yml" && \
 	sed 's/SERVICE_VERSION/${VERSION}/g' docker-compose.yml.templ > docker-compose.yml
+
+.PHONY: registry-login
+registry-login:  ## login to docker hub
+	@docker login --username akamaslabs -p $(DOCKER_HUB_TOKEN)
 
 .PHONY: release-to-S3
 release-to-S3: update-compose ## release to S3
