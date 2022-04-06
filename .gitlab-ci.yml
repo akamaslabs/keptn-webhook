@@ -1,0 +1,31 @@
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  GIT_SUBMODULE_STRATEGY: normal
+
+services:
+  - docker:19.03.5-dind
+
+image: registry.gitlab.com/akamas/devops/build-base/build-base:1.3.1
+
+stages:
+  - build
+  - deploy
+
+#Build stages just to verify that image guild
+build:
+  stage: build
+  script:
+    - make info
+    - make build
+
+#Deploy stages to push image to repo
+buildAndPush:
+  stage: deploy
+  only:
+    - tags
+  script:
+    - make info
+    - make buildAndPush
