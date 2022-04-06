@@ -1,0 +1,21 @@
+version: '3.5'
+
+networks:
+  akamas-ext:
+    external:
+      name: akamas
+
+services:
+  akamas-webhook:
+    image: 485790562880.dkr.ecr.us-east-2.amazonaws.com/akamas/integrations/keptn-webhook:SERVICE_VERSION
+    container_name: keptn-webhook
+    networks:
+      - akamas-ext
+    volumes:
+      - ../certs:/certs:ro
+    environment:
+      - KEPTN_URL
+      - KEPTN_TOKEN
+    command: gunicorn webhook:app --bind 0.0.0.0:6000 --certfile=/certs/akamas.pem --keyfile=/certs/akamas.key
+    ports:
+      - 6000:6000

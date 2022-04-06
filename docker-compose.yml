@@ -7,7 +7,7 @@ networks:
 
 services:
   akamas-webhook:
-    image: 485790562880.dkr.ecr.us-east-2.amazonaws.com/akamas/integrations/keptn-webhook:1.0.0-dev
+    image: 485790562880.dkr.ecr.us-east-2.amazonaws.com/akamas/integrations/keptn-webhook:0.1.0-dev
     container_name: keptn-webhook
     networks:
       - akamas-ext
