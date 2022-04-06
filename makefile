@@ -49,5 +49,5 @@ update-compose:  ## Update service version in docker-compose
 .PHONY: release-to-S3
 release-to-S3: update-compose ## release to S3
 	@echo "Releasing installation files (compose and env) to s3 at $(S3_BUCKET)" && \
-    aws s3 cp docker-compose.yml $(S3_BUCKET)docker-compose.yml --acl public-read --no-progress && \    
-    aws s3 cp env.templ $(S3_BUCKET)env.templ --acl public-read --no-progress      
+    aws s3 cp docker-compose.yml $(S3_BUCKET)docker-compose.yml --acl public-read --no-progress && \
+	aws s3 cp env.templ $(S3_BUCKET)env.templ --acl public-read --no-progress
