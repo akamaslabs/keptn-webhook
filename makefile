@@ -9,7 +9,7 @@ S3_BUCKET=s3://akamas/integrations/keptn/
 this_version := ${shell grep 'version=' setup.py| awk -F'=' '{print $2}' | cut -d"'" -f 2}
 service := keptn-webhook
 VERSION ?= ${this_version}
-IMAGE_NAME := akamaslabs/integrations/$(service)
+IMAGE_NAME := akamaslabs/integrations-$(service)
 
 
 .PHONY: help
@@ -28,17 +28,13 @@ build: ## Builds docker image
 		-f build/Dockerfile \
 		.
 .PHONY: push
-push: login-ecr  ## Builds and pushes the image to the registry
-	@docker push ${IMAGE_NAME}:${VERSION}
+push:  ## Builds and pushes the image to the registry
+	env && \
+	docker push ${IMAGE_NAME}:${VERSION}
 
 .PHONY: buildAndPush
-buildAndPush: login-ecr build  ## Builds and pushes the image to the registry
+buildAndPush: build  ## Builds and pushes the image to the registry
 	@docker push ${IMAGE_NAME}:${VERSION}
-
-.PHONY: login-ecr
-login-ecr:  ## Login to ECR Docker Registry
-	@echo "Logging in to AWS ECR" && \
-	eval $(shell aws ecr get-login --no-include-email --region us-east-2)
 
 .PHONY: update-compose
 update-compose:  ## Update service version in docker-compose
