@@ -32,6 +32,10 @@ build: ## Builds docker image
 push: login-ecr  ## Builds and pushes the image to the registry
 	@docker push ${IMAGE_NAME}:${VERSION}
 
+.PHONY: buildAndPush
+buildAndPush: login-ecr build  ## Builds and pushes the image to the registry
+	@docker push ${IMAGE_NAME}:${VERSION}
+
 .PHONY: login-ecr
 login-ecr:  ## Login to ECR Docker Registry
 	echo "Logging in to AWS ECR" && \
