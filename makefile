@@ -1,8 +1,26 @@
+DEFAULT_GOAL := help
+SHELL := /bin/bash
+THIS_FILE := $(lastword $(MAKEFILE_LIST))
+THIS_FOLDER := $(shell basename $(CURDIR))
+parsed_branch := $(shell git rev-parse --abbrev-ref HEAD)
+this_branch = $(if $(CI_COMMIT_REF_NAME),  $(CI_COMMIT_REF_NAME), $(parsed_branch))
+
+
 this_version := ${shell grep 'version=' setup.py| awk -F'=' '{print $2}' | cut -d"'" -f 2}
 AKAMAS_REGISTRY := 485790562880.dkr.ecr.us-east-2.amazonaws.com
 service := keptn-webhook
 VERSION ?= ${this_version}
 IMAGE_NAME := ${AKAMAS_REGISTRY}/akamas/integrations/$(service)
+
+
+.PHONY: help
+help:							## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$'  $(MAKEFILE_LIST) | sort | awk -F: '{printf "%s: %s\n", $$1, $$2}' | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: info
+info:  					## Print some info on the repo
+	@echo "this version: $(VERSION)" && \
+	echo "this branch: $(this_branch)" 
 
 .PHONY: build
 build: ## Builds docker image
