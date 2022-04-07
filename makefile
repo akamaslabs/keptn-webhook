@@ -39,7 +39,7 @@ buildAndPush: build registry-login ## Builds and pushes the image to the registr
 .PHONY: update-compose
 update-compose:  ## Update service version in docker-compose
 	@echo "Actualizing version ${VERSION} in docker-compose.yml" && \
-	sed 's/SERVICE_VERSION/${VERSION}/g' docker-compose.yml.templ > docker-compose.yml && \
+	sed 's/SERVICE_VERSION/${VERSION}/g' docker-compose.yml.templ > docker-compose.yml
 
 .PHONY: registry-login
 registry-login:  ## login to docker hub

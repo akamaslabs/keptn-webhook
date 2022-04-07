@@ -17,7 +17,6 @@ logging.basicConfig(stream=sys.stdout,
 
 app = Flask(__name__)
 
-
 @app.route("/v1/study-run", methods=['POST'])
 def get_request():    
     def check_study():
@@ -37,8 +36,6 @@ def get_request():
 
     if login(user, pwd) != 0:
         return "User/password combination is wrong", 401
-    
-    #get_best_configuration(body['study-id'])
     
     if launch_study(body["study-id"]) == 1:
         return "Study is already running, wait for completion", 422
@@ -123,16 +120,14 @@ def send_finished(body):
     send_event("finished", body)
 
 def send_event(eventState, body):
-    # According to the keptn documentation:
-    # 'This custom data will be automatically appended to every remaining triggered task event in the sequence. The data must be passed in an attribute with the name of the task.'
-    # Thus the results are stored in the data.optimize key
+    
     data = {
       "project": body['project'],
       "stage": body['stage'],
       "service": body['service'],
       "status": "succeeded",
       "result": "pass",
-      "optimize": get_best_configuration(body['study-id'])
+      body['type'].split('.')[-2]: get_best_configuration(body['study-id']) 
     }
 
     reply = {
@@ -160,13 +155,25 @@ def send_event(eventState, body):
 
 def get_best_configuration(studyId):
     studyRequest = f'akamas describe -o json study {studyId}'
-    output, statusCode = launch_command(studyRequest)
 
+    output, statusCode = launch_command(studyRequest)
+    app.logger.debug(f'Status code: {statusCode}')
+    
     study = json.loads(output)
 
-    app.logger.debug(f'Status code: {statusCode}')
-    app.logger.debug(f"Study: {study}")
-    app.logger.info(f'Best configuration: {study["best configuration"]}')
+    best_configuration = {}
+    for attribute, value in study['best configuration'].items():
+        key_split = attribute.split('.')
 
-    return study['best configuration']
+        component = key_split[0]
+        parameter = key_split[1]
+        
+        if component not in best_configuration:
+            best_configuration[component] = {}
+
+        best_configuration[component][parameter] = value
+
+    app.logger.debug(f'Best configuration: {best_configuration}')
+
+    return best_configuration
 
