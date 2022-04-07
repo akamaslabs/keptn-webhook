@@ -17,6 +17,8 @@ stages:
 #Build stages just to verify that image guild
 build:
   stage: build
+  except:
+    - tags
   script:
     - make info
     - make build
