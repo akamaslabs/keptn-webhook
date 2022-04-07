@@ -39,7 +39,7 @@ buildAndPush: build registry-login ## Builds and pushes the image to the registr
 .PHONY: update-compose
 update-compose:  ## Update service version in docker-compose
 	@echo "Actualizing version ${VERSION} in docker-compose.yml" && \
-	sed 's/SERVICE_VERSION/${VERSION}/g' docker-compose.yml.templ > docker-compose.yml
+	sed 's/SERVICE_VERSION/${VERSION}/g' docker-compose.yml.templ > docker-compose.yml && \
 
 .PHONY: registry-login
 registry-login:  ## login to docker hub
@@ -48,5 +48,5 @@ registry-login:  ## login to docker hub
 .PHONY: release-to-S3
 release-to-S3: update-compose ## release to S3
 	@echo "Releasing installation files (compose and env) to s3 at $(S3_BUCKET)" && \
-    aws s3 cp docker-compose.yml $(S3_BUCKET)docker-compose.yml --acl public-read --no-progress && \
+        aws s3 cp docker-compose.yml $(S3_BUCKET)docker-compose.yml --acl public-read --no-progress && \
 	aws s3 cp env.templ $(S3_BUCKET)env.templ --acl public-read --no-progress
